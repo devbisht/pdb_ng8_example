@@ -1,0 +1,9 @@
+{
+  "name": "pdb-anguler8-example",
+  "version": "1.0.0",
+  "dependencies": {
+    "@angular/material": "^8.2.3",
+    "@angular/cdk": "^8.2.3"
+  },
+  "devDependencies": {}
+}

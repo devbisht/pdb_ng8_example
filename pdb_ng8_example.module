@@ -1,0 +1,24 @@
+<?php
+
+use Drupal\Core\Render\Markup;
+use Drupal\Component\Utility\Html;
+
+/**
+ * Implementation of hook_block_view_alter
+ */
+function pdb_ng8_example_block_view_alter(array &$build, \Drupal\Core\Block\BlockPluginInterface $block) {
+  // adding libraray
+  $build['#pre_render'][] = '_pdb_ng8_example_block_libraries_override';
+}
+
+/** 
+ * Helper to block view alter
+*/
+function _pdb_ng8_example_block_libraries_override(array $build) {
+  $module_path = drupal_get_path('module', 'pdb_ng8_example');
+  // add dependencies
+  $build['content']['#attached']['library'][] = 'pdb_ng8_example/pdb_ng8_example.core';
+  $build['#attached']['drupalSettings']['pdb_ng8_example']['path'] = $module_path;
+
+  return $build;
+}

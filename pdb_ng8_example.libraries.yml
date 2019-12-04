@@ -1,0 +1,8 @@
+pdb_ng8_example.core:
+  css:
+    theme:
+      node_modules/@angular/material/prebuilt-themes/purple-green.css: { minified: true }
+  js:
+    js/systemConfig.js: {}
+  dependencies:
+    - pdb_ng8/pdb.ng8.config
