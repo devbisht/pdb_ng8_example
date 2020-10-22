@@ -5,7 +5,7 @@ type: pdb
 package: NG8
 module_status: active
 presentation: ng8
-core: '8.x'
+core_version_requirement: ^8 || ^9
 configuration:
   title:
     type: textfield
