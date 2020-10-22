@@ -1,14 +1,43 @@
 <?php
 
-use Drupal\Core\Render\Markup;
-use Drupal\Component\Utility\Html;
+use Drupal\Core\Block\BlockPluginInterface;
+use Drupal\Core\Security\TrustedCallbackInterface;
+
 
 /**
- * Implementation of hook_block_view_alter
+ * Refactoring pdb_ng8_example.module to address the following exception: 
+ * 
+ *   Drupal\Core\Security\UntrustedCallbackException: 
+ *   Render #pre_render callbacks must be methods of a class that implements \Drupal\Core\Security\TrustedCallbackInterface or be an anonymous function. 
+ *   The callback was _pdb_ng8_example_block_libraries_override. 
+ *   See https://www.drupal.org/node/2966725 in Drupal\Core\Render\Renderer->doTrustedCallback() (line 96 of core/lib/Drupal/Core/Security/DoTrustedCallbackTrait.php).
+ *
+ * Does not work.
  */
-function pdb_ng8_example_block_view_alter(array &$build, \Drupal\Core\Block\BlockPluginInterface $block) {
-  // adding libraray
-  $build['#pre_render'][] = '_pdb_ng8_example_block_libraries_override';
+
+
+class PdbNg8ExampleBlock implements TrustedCallbackInterface {
+  /**
+    * {@inheritdoc} 
+  */
+  public static function trustedCallbacks() {
+    return ['preRender'];
+  }
+
+  /**
+    * #pre_render callback: 
+  */
+  public static function preRender(array &$build, BlockPluginInterface $block) {
+      // adding libraray
+    $build['#pre_render'][] = '_pdb_ng8_example_block_libraries_override';
+  }
+  public function __construct(array &$build, BlockPluginInterface $block) {
+    $this->trustedCallbacks();
+  }
+}
+
+function pdb_ng8_example_block_view_alter(array &$build, BlockPluginInterface $block) { 
+  $test = new PdbNg8ExampleBlock($build, $block);
 }
 
 /** 
@@ -22,3 +51,28 @@ function _pdb_ng8_example_block_libraries_override(array $build) {
 
   return $build;
 }
+
+
+
+// use Drupal\Core\Render\Markup;
+// use Drupal\Component\Utility\Html;
+
+// /**
+//  * Implementation of hook_block_view_alter
+//  */
+// function pdb_ng8_example_block_view_alter(array &$build, \Drupal\Core\Block\BlockPluginInterface $block) {
+//   // adding libraray
+//   $build['#pre_render'][] = '_pdb_ng8_example_block_libraries_override';
+// }
+
+// * 
+//  * Helper to block view alter
+
+// function _pdb_ng8_example_block_libraries_override(array $build) {
+//   $module_path = drupal_get_path('module', 'pdb_ng8_example');
+//   // add dependencies
+//   $build['content']['#attached']['library'][] = 'pdb_ng8_example/pdb_ng8_example.core';
+//   $build['#attached']['drupalSettings']['pdb_ng8_example']['path'] = $module_path;
+
+//   return $build;
+// }
